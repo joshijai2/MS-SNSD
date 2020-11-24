@@ -7,6 +7,9 @@ __pycache__/
 *.so
 
 # Distribution / packaging
+NoisySpeech_training/
+CleanSpeech_training/
+Noise_training/
 .Python
 build/
 develop-eggs/
