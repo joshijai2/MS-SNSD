@@ -61,7 +61,7 @@ def main(cfg):
         idx_s = np.random.randint(0, np.size(cleanfilenames))
         clean, fs = audioread(cleanfilenames[idx_s])
         
-        if len(clean)>audio_length:
+        if len(clean) == audio_length:
             clean = clean
         
         else:
@@ -73,7 +73,7 @@ def main(cfg):
                 newclean, fs = audioread(cleanfilenames[idx_s])
                 cleanconcat = np.append(clean, np.zeros(int(fs*silence_length)))
                 clean = np.append(cleanconcat, newclean)
-    
+        clean = clean[0:audio_length]
         idx_n = np.random.randint(0, np.size(noisefilenames))
         noise, fs = audioread(noisefilenames[idx_n])
         
