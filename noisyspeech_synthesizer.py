@@ -20,7 +20,7 @@ def main(cfg):
     if not os.path.exists(clean_dir):
         assert False, ("Clean speech data is required")
     
-    noise_dir = os.path.join(os.path.dirname(__file__), 'noise_train')
+    noise_dir = os.path.join(os.path.dirname(__file__), 'noise_train_new')
     if cfg["noise_dir"]!='None':
         noise_dir = cfg["noise_dir"]
     if not os.path.exists(noise_dir):
