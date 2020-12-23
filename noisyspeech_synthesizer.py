@@ -5,9 +5,12 @@ import glob
 import numpy as np
 import soundfile as sf
 import os
+import sys
 import argparse
+from tqdm import tqdm
 import configparser as CP
 from audiolib import audioread, audiowrite, snr_mixer
+from audioslicer import slicer
 
 def main(cfg):
     snr_lower = int(cfg["snr_lower"])
@@ -19,12 +22,24 @@ def main(cfg):
         clean_dir = cfg["speech_dir"]
     if not os.path.exists(clean_dir):
         assert False, ("Clean speech data is required")
-    
-    noise_dir = os.path.join(os.path.dirname(__file__), 'noise_train_new')
-    if cfg["noise_dir"]!='None':
-        noise_dir = cfg["noise_dir"]
-    if not os.path.exists(noise_dir):
-        assert False, ("Noise data is required")
+    try:
+        noise_dir = os.path.join(os.path.dirname(__file__), 'noise_train_new')
+        if cfg["noise_dir"]!='None':
+            noise_dir = cfg["noise_dir"]
+        if not os.path.exists(noise_dir):
+            raise Exception("path does not exist")
+        if not len(os.listdir(noise_dir)):
+            raise Exception("folder is empty")
+    except:
+        res = input("Can't find noise data. Do you want to run the audio slicer?\nEnter [Y]es [N]o\n")
+        if res.lower() in ["y","yes",""]:
+            slicer()
+            print("Sliced successfully.\n\n")
+
+        else:
+            input("Noise data is required.\nPress any key to exit.\n")
+            sys.exit()
+        
         
     fs = float(cfg["sampling_rate"])
     audioformat = cfg["audioformat"]
@@ -46,6 +61,7 @@ def main(cfg):
     audio_length = int(audio_length*fs)
     SNR = np.linspace(snr_lower, snr_upper, total_snrlevels)
     cleanfilenames = glob.glob(os.path.join(clean_dir, audioformat))
+    
     if cfg["noise_types_excluded"]=='None':
         noisefilenames = glob.glob(os.path.join(noise_dir, audioformat))
     else:
@@ -94,9 +110,9 @@ def main(cfg):
        
         for i in range(np.size(SNR)):
             clean_snr, noise_snr, noisy_snr = snr_mixer(clean=clean, noise=noise, snr=SNR[i])
-            noisyfilename = 'noisy'+str(filecounter)+'_SNRdb_'+str(SNR[i])+noisefilenames[idx_n]+'.wav'
+            noisyfilename = 'noisy'+str(filecounter)+'_SNRdb_'+str(SNR[i])+noisefilenames[idx_n].split("\\")[-1].split(".")[0]+'.wav'
             cleanfilename = 'clnsp'+str(filecounter)+'_.wav'
-            noisefilename = 'noise'+str(filecounter)+'_SNRdb_'+str(SNR[i])+noisefilenames[idx_n]+'.wav'
+            noisefilename = 'noise'+str(filecounter)+'_SNRdb_'+str(SNR[i])+noisefilenames[idx_n].split("\\")[-1].split(".")[0]+'.wav'
             noisypath = os.path.join(noisyspeech_dir, noisyfilename)
             cleanpath = os.path.join(clean_proc_dir, cleanfilename)
             noisepath = os.path.join(noise_proc_dir, noisefilename)
@@ -122,4 +138,4 @@ if __name__=="__main__":
     cfg.read(cfgpath)
     
     main(cfg._sections[args.cfg_str])
-    input("Mixed successfully.\nPress any key to continue.\n")
+    input("Mixed successfully.\nPress Enter key to continue.\n")

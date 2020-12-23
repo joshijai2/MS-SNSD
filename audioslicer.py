@@ -4,7 +4,6 @@ import soundfile as sf
 import os
 from audiolib import audioread, audiowrite, snr_mixer
 
-
 def slicer():
     audioformat = "*.wav"
     audio_length = 10
@@ -12,6 +11,8 @@ def slicer():
     audio_dir = os.path.join(os.path.dirname(__file__), 'noise_train')
     filenames = glob.glob(os.path.join(audio_dir, audioformat))
     audio_length = int(audio_length*fs)
+    if not os.path.exists(audio_dir):
+        os.makedirs(audio_dir+"_new")
     for wavfile in filenames:
         file, fs = audioread(wavfile)
         
@@ -26,7 +27,7 @@ def slicer():
 
 if __name__=="__main__":
     slicer()
-    input("Processed successfully.\nPress any key to continue.\n")
+    input("Sliced successfully.\nPress Enter key to continue.\n")
 
         
     
