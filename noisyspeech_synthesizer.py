@@ -94,9 +94,9 @@ def main(cfg):
        
         for i in range(np.size(SNR)):
             clean_snr, noise_snr, noisy_snr = snr_mixer(clean=clean, noise=noise, snr=SNR[i])
-            noisyfilename = 'noisy'+str(filecounter)+'_SNRdb_'+str(SNR[i])+'_clnsp'+str(filecounter)+'.wav'
+            noisyfilename = 'noisy'+str(filecounter)+'_SNRdb_'+str(SNR[i])+noisefilenames[idx_n]+'.wav'
             cleanfilename = 'clnsp'+str(filecounter)+'_.wav'
-            noisefilename = 'noisy'+str(filecounter)+'_SNRdb_'+str(SNR[i])+'.wav'
+            noisefilename = 'noise'+str(filecounter)+'_SNRdb_'+str(SNR[i])+noisefilenames[idx_n]+'.wav'
             noisypath = os.path.join(noisyspeech_dir, noisyfilename)
             cleanpath = os.path.join(clean_proc_dir, cleanfilename)
             noisepath = os.path.join(noise_proc_dir, noisefilename)

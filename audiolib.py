@@ -70,4 +70,3 @@ def snr_mixer(clean, noise, snr):
     noisyspeech = clean + noisenewlevel
     return clean, noisenewlevel, noisyspeech
         
-    
